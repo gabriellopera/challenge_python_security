@@ -24,8 +24,10 @@ Este proyecto contiene una API desarrollada con Django Rest Framework para obten
 
 4. La API estará disponible en `http://localhost:5173` (o en el puerto configurado en tu archivo `docker-compose.yml`).
 5. Una vez iniciada la aplicación, puedes loguearte con los siguientes datos:
+       ```
        username= admin
        password= abc$123456
+       ```
    
 ## Notas
 
