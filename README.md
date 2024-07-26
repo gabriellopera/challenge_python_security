@@ -11,7 +11,7 @@ Este proyecto contiene una API desarrollada con Django Rest Framework para obten
 
 1. Clona este repositorio en tu máquina local:
     ```bash
-    git clone [https://github.com/tu-usuario/tu-repositorio.git](https://github.com/gabriellopera/challenge_python_security.git)
+    git clone (https://github.com/gabriellopera/challenge_python_security.git)
     cd tu-repositorio
     ```
 
