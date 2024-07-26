@@ -1,0 +1,15 @@
+# version: "3.8"
+
+services:
+  api:
+    build: dev/.
+    working_dir: /api
+    container_name: 'reto_seguridad'
+    command: python manage.py runserver 0:8000 # --settings=e_survey.settings_develop
+    # command: /bin/sh -c "while sleep 1000; do :; done"
+    ports:
+      - "5173:8000"
+    volumes: # is no too necesary in prod. environment
+      - .:/api
+    environment:
+      - DJANGO_DEBUG=True
