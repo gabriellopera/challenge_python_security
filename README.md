@@ -1,7 +1,3 @@
-¡Claro! Aquí tienes un ejemplo de un archivo README para iniciar el contenedor usando Docker y el comando `docker compose up`:
-
----
-
 # Proyecto de API de Vulnerabilidades
 
 Este proyecto contiene una API desarrollada con Django Rest Framework para obtener y gestionar vulnerabilidades del NIST.
@@ -15,7 +11,7 @@ Este proyecto contiene una API desarrollada con Django Rest Framework para obten
 
 1. Clona este repositorio en tu máquina local:
     ```bash
-    git clone https://github.com/tu-usuario/tu-repositorio.git
+    git clone [https://github.com/tu-usuario/tu-repositorio.git](https://github.com/gabriellopera/challenge_python_security.git)
     cd tu-repositorio
     ```
 
@@ -26,7 +22,7 @@ Este proyecto contiene una API desarrollada con Django Rest Framework para obten
     docker compose up
     ```
 
-4. La API estará disponible en `http://localhost:8000` (o en el puerto configurado en tu archivo `docker-compose.yml`).
+4. La API estará disponible en `http://localhost:5173` (o en el puerto configurado en tu archivo `docker-compose.yml`).
 
 ## Notas
 
@@ -36,6 +32,3 @@ Este proyecto contiene una API desarrollada con Django Rest Framework para obten
     docker compose down
     ```
 
----
-
-¿Hay algo más en lo que pueda ayudarte?
