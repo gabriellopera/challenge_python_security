@@ -10,7 +10,7 @@ Este proyecto contiene una API desarrollada con Django Rest Framework para obten
 ## Instrucciones para iniciar el contenedor
 
 1. Clona este repositorio en tu máquina local:
-    ```bash
+    ```
     git clone (https://github.com/gabriellopera/challenge_python_security.git)
     cd tu-repositorio
     ```
@@ -18,7 +18,7 @@ Este proyecto contiene una API desarrollada con Django Rest Framework para obten
 2. Asegúrate de tener Docker y Docker Compose instalados en tu sistema.
 
 3. Construye y levanta los contenedores con el siguiente comando:
-    ```bash
+    ```
     docker compose up
     ```
 
@@ -28,7 +28,6 @@ Este proyecto contiene una API desarrollada con Django Rest Framework para obten
 
 - Las URL o IP:Puerto pueden variar según el entorno en el que se despliegue la API.
 - Para detener los contenedores, usa `Ctrl+C` en la terminal donde ejecutaste `docker compose up` o ejecuta:
-    ```bash
+    ```
     docker compose down
     ```
-
