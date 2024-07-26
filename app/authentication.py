@@ -72,7 +72,6 @@ def jwt_response_payload_handler(token, user=None, request=None):
 
     # Recorrer los grupos
     for group in groups:
-        # print('grupo', group.name)
         groups_list.append({"id": group.id, "group": group.name})
         # Recorrer todos los permisos de cada grupo y asignarlos
         for permission in group.permissions.all():
@@ -96,16 +95,3 @@ def jwt_payload_handler(user):
     payload = utils.jwt_payload_handler(user)
 
     return payload
-
-
-
-def generatePassword(self):
-  '''
-  Método que genera contraseña aleatorias
-  '''
-  longitud = 10
-  valores = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<=>@#%&+"
-
-  valueRandom = ""
-  valueRandom = valueRandom.join([choice(valores) for i in range(longitud)])
-  return valueRandom

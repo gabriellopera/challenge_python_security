@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-from app.authentication import generatePassword
 from django.db import transaction
 from .models import *
 
@@ -82,10 +81,6 @@ class SaveUserSerializer(serializers.ModelSerializer):
     User serializer
     """
 
-    # first_name = serializers.CharField(allow_null=True, allow_blank=True)
-    # last_name = serializers.CharField(allow_null=True, allow_blank=True)
-    # email = serializers.CharField(allow_null=True, allow_blank=True)
-
     def validate(self, data):
 
         # Se valida grupos obligatorio
@@ -96,26 +91,17 @@ class SaveUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """
-        Sobreescribir el método create para guardar en user y user_data
+        Sobreescribir el método create para guardar en user
         """
-        print('data', validated_data)
         try:
             with transaction.atomic():
                 copy_data = validated_data.copy()
-                # user_data = validated_data.pop("user_data_user")
                 instance = super().create(validated_data)
 
-                # se le asigna clave ramdom (al iniciar session se le asigana la clave de red)
-                print("Hola@", instance)
+                # se guarda la clave
                 copy_data["password"] = validated_data['password']
                 instance.set_password(copy_data["password"])
                 instance.save()
-
-                # # Se crea instancia en user_data
-                # user_data["user"] = instance.id
-                # serializer_user_data = CreateDataSerializer(data=user_data)
-                # serializer_user_data.is_valid(raise_exception=True)
-                # serializer_user_data.save()
 
                 return instance
         except Exception as error:
@@ -124,7 +110,7 @@ class SaveUserSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """
-        Sobreescribir el método update para guardar en user y user_data
+        Sobreescribir el método update para guardar en user
         """
 
         # Se valida en el update  permitir cambiar roles a un usuario si este se encuentra en asignacion de personal
@@ -136,15 +122,7 @@ class SaveUserSerializer(serializers.ModelSerializer):
 
         actual_groups.sort()
         new_groups.sort()
-        # user_data_user = validated_data.pop("user_data_user")
         new_instance = super().update(instance, validated_data)
-        # # Se actualiza instancia en user_data
-        # user_data_user["user"] = instance.id
-        # serializer_user_data = CreateDataSerializer(
-        #     instance.user_data_user, data=user_data_user
-        # )
-        # serializer_user_data.is_valid(raise_exception=True)
-        # serializer_user_data.save()
 
 
         return new_instance

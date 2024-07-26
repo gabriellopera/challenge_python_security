@@ -20,19 +20,26 @@ class AllVulnerabilities(viewsets.ModelViewSet):
     queryset = Vulnerabilities.objects.all()
     serializer_class = VulnerabilitiesSerializer
 
+
     def create(self, request):
+        """
+        Se personaliza método para el guardado de vulnerabilidades fixeadas
+        """
         serializer = VulnerabilitiesSerializer(data=request.data)
         
         if serializer.is_valid():
             if (self.search_vulnerabiltie(serializer.validated_data.get('cve_id'))['status'] == True):
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+                return Response({'status': True, 'data': serializer.data}, status=status.HTTP_201_CREATED)
             return Response({'status': False, 'error': "cve_id don't exists in NIST list"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'status': False, 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
     @action(detail=False, methods=['GET'], url_path='all')
     def vulnerabilities(self, request):
+        """
+        Método encargado de obtener todas las vulnerabilidades, con o sin las fixeadas
+        """
         try:
             new_serializer = VulnerabilitiesPagSerializer(data=request.query_params)
             if new_serializer.is_valid():
@@ -51,8 +58,6 @@ class AllVulnerabilities(viewsets.ModelViewSet):
                         for j in data['vulnerabilities']:
                             if j['cve']['id'] not in filter_list:
                                 new_list.append(j)
-                                # print('holi', i['cve_id'])
-                                # print('chao', j['cve']['id'])
                         data['vulnerabilities'] = new_list
                         return Response({'status': True, 'data': data}, status=status.HTTP_200_OK)
                     return Response({'status': True, 'data': data}, status=status.HTTP_200_OK)
@@ -62,27 +67,11 @@ class AllVulnerabilities(viewsets.ModelViewSet):
             return Response({'status': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 
-    @action(detail=False, methods=['GET'], url_path='no_fixed')
-    def no_fixed(self, request):
-        try:
-            new_serializer = VulnerabilitiesPagSerializer(data=request.query_params)
-            if new_serializer.is_valid():
-
-                params = {"resultsPerPage": new_serializer.data.get('page_size'),
-                          "startIndex": new_serializer.data.get('index')}
-                response = requests.request("GET",settings.URL_NIST, params=params, timeout=10)
-
-                if response.status_code == requests.codes.ok:
-                    data = json.loads(response.text)
-                
-                    return Response({'status': True, 'data': data}, status=status.HTTP_200_OK)
-                return Response({'status': False, 'error': 'bad requests for API Nist'}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({'status': False, 'error': new_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'status': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
     @action(detail=False, methods=['GET'], url_path='summarized')
     def summarized(self, request):
+        """
+        Método encargado de sumarizar las vulnerabilidades por severidad
+        """
         try:
             severity = ["MEDIUM", "LOW", "HIGH", "CRITICAL"]
             data = {}
@@ -92,12 +81,16 @@ class AllVulnerabilities(viewsets.ModelViewSet):
                 if response.status_code == requests.codes.ok:
                     all_data = json.loads(response.text)
                     data[item] = all_data['totalResults']
-            data['TOTAL'] = data['MEDIUM'] + data['LOW'] + data['HIGH']
+            if (data['MEDIUM'] and data['LOW'] and data['HIGH']):
+                data['TOTAL'] = data['MEDIUM'] + data['LOW'] + data['HIGH']
             return Response({'status': True, 'data': data}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': False, 'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def search_vulnerabiltie(self, ids):
+        """
+        Función encargada de validar si la vulnerabilidad a guardar en la App existe en el NIST
+        """
         try:
             response = requests.request("GET", settings.URL_NIST, params={"cveId": ids}, timeout=10)
             if response.status_code == requests.codes.ok:
@@ -112,12 +105,10 @@ class AllVulnerabilities(viewsets.ModelViewSet):
         
 
 
-@permission_classes([IsAuthenticated])
 class AdminUsersViewSet(BaseViewSet):
     '''
     Vista para el modelo de usuarios
     '''
-    # permission_code = 'user'
     queryset = User.objects.all().prefetch_related(
             "groups",
             "user_permissions"
@@ -128,9 +119,7 @@ class AdminUsersViewSet(BaseViewSet):
     
     def create(self, request):
         """
-        Método que hace la carga de usuarios
-        parametros:
-        username : string
+        Método encargado de la creación de usuarios
         """
         instance = self.queryset.filter(
             username=request.data.get("username", None)
@@ -138,9 +127,11 @@ class AdminUsersViewSet(BaseViewSet):
         if instance:
             return Response({"username": ["El usuario ya existe."]}, status=400)
         self.serializer_class = SaveUserSerializer
-        print('request', request)
         return super().create(request)
     
     def update(self, request, pk=None):
+        """
+        Método encargado de la actualización de usuarios
+        """
         self.serializer_class = SaveUserSerializer
         return super().update(request, pk)
